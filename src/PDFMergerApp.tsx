@@ -7,6 +7,7 @@ import type { FileItem } from "./schema/types";
 import Sidebar from "./widgets/Sidebar";
 import ProgressLoader from "./widgets/ProgressLoader";
 import ShowFileList from "./widgets/ShowFileList";
+import { mergeFilesToPdf } from "./utils/mergePdf";
 
 export default function PDFMergerApp() {
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -79,15 +80,27 @@ export default function PDFMergerApp() {
     setIsProcessing(true);
     setProgress(0);
 
-    // Simulate processing
-    for (let i = 0; i <= 100; i += 10) {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      setProgress(i);
-    }
+    try {
+      // Simulate processing
+      for (let i = 0; i <= 100; i += 10) {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        setProgress(i);
+      }
 
-    setIsProcessing(false);
-    setProgress(0);
-    alert("Choose where to save your merged PDF file...");
+      const mergeBlob = await mergeFilesToPdf(files);
+      setIsProcessing(false);
+      setProgress(0);
+      await new Promise((r) => setTimeout(r, 300));
+
+      const url = URL.createObjectURL(mergeBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "merged.pdf";
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("Merging files failed...");
+    }
   };
 
   return (
@@ -174,7 +187,7 @@ export default function PDFMergerApp() {
       </div>
 
       {/* Sticky Bottom Merge Button - only show when files exist */}
-      {files.length > 0 && !isProcessing && (
+      {files.length > 1 && !isProcessing && (
         <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
           <Button
             className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg px-8 py-3 text-lg font-semibold"

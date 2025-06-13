@@ -43,7 +43,7 @@ export default function Sidebar({
             className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
             size="lg"
             onClick={handleMerge}
-            disabled={files.length === 0 || isProcessing}
+            disabled={files.length <= 1 || isProcessing}
           >
             <Combine className="w-4 h-4 mr-2" />
             {isProcessing ? "Processing..." : "Merge Files"}
