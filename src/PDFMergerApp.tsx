@@ -1,26 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import {
-  FileText,
-  ImageIcon,
-  Upload,
-  X,
-  ArrowUp,
-  ArrowDown,
-  RotateCw,
-  Eye,
-  Trash2,
-  Combine,
-  Files,
-} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { FileText, ImageIcon, Upload, Combine, Files } from "lucide-react";
 import Header from "./widgets/Header";
 import type { FileItem } from "./schema/types";
 import Sidebar from "./widgets/Sidebar";
 import ProgressLoader from "./widgets/ProgressLoader";
-import FileList from "./widgets/ShowFileList";
 import ShowFileList from "./widgets/ShowFileList";
 
 export default function PDFMergerApp() {
@@ -29,9 +14,40 @@ export default function PDFMergerApp() {
   const [progress, setProgress] = useState(0);
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const handleFileUpload = () => {
-    // handle file upload
-    console.log("upload handling");
+  const handleFileUpload = (files?: FileList) => {
+    console.log("file uplaoding");
+    if (files) {
+      const validFiles: FileItem[] = Array.from(files)
+        .filter((file) =>
+          ["application/pdf", "image/png", "image/jpeg"].includes(file.type)
+        )
+        .map((file) => ({
+          file,
+          id: crypto.randomUUID(),
+          name: file.name,
+          type: file.type == "application/pdf" ? "pdf" : "image",
+          size: `${file.size}`,
+          preview:
+            file.type == "application/pdf"
+              ? "/placeholder.svg?height100&width=100"
+              : undefined,
+        }));
+      setFiles((prev) => [...prev, ...validFiles]);
+    } else {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "application/pdf,image/png,image/jpeg";
+      input.multiple = true;
+
+      input.onchange = (e) => {
+        const target = e.target as HTMLInputElement;
+        if (target.files) {
+          handleFileUpload(target.files);
+        }
+      };
+
+      input.click();
+    }
   };
 
   const removeFile = (id: string) => {
@@ -92,7 +108,7 @@ export default function PDFMergerApp() {
                       ? "border-blue-400 bg-blue-50 scale-[1.02]"
                       : "border-gray-300 hover:border-blue-400 hover:bg-gray-50"
                   }`}
-                  onClick={handleFileUpload}
+                  onClick={() => handleFileUpload()}
                   onDragOver={(e) => {
                     e.preventDefault();
                     setIsDragOver(true);
@@ -101,7 +117,7 @@ export default function PDFMergerApp() {
                   onDrop={(e) => {
                     e.preventDefault();
                     setIsDragOver(false);
-                    handleFileUpload();
+                    handleFileUpload(e.dataTransfer.files);
                   }}
                 >
                   <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
