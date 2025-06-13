@@ -7,16 +7,12 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
     "check:formatting": "prettier --check .",
     "format": "prettier --write .",
-    "check:types": "tsc --noEmit",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
