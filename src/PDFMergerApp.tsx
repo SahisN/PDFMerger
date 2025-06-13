@@ -16,14 +16,12 @@ import {
   Combine,
   Files,
 } from "lucide-react";
-
-interface FileItem {
-  id: string;
-  name: string;
-  type: "pdf" | "image";
-  size: string;
-  preview?: string;
-}
+import Header from "./widgets/Header";
+import type { FileItem } from "./schema/types";
+import Sidebar from "./widgets/Sidebar";
+import ProgressLoader from "./widgets/ProgressLoader";
+import FileList from "./widgets/ShowFileList";
+import ShowFileList from "./widgets/ShowFileList";
 
 export default function PDFMergerApp() {
   const [files, setFiles] = useState<FileItem[]>([]);
@@ -79,23 +77,7 @@ export default function PDFMergerApp() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
-              <Combine className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">
-                PDF Merger
-              </h1>
-              <p className="text-sm text-gray-600">
-                Combine PDFs and images seamlessly
-              </p>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="flex-1 flex">
         {/* Main Content */}
@@ -154,188 +136,25 @@ export default function PDFMergerApp() {
 
             {/* File List */}
             {files.length > 0 && (
-              <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span className="text-gray-900">
-                      Files to merge ({files.length})
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setFiles([])}
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Clear All
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {files.map((file, index) => (
-                      <div
-                        key={file.id}
-                        className="flex items-center gap-4 p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200"
-                      >
-                        <div className="flex items-center gap-3 flex-1">
-                          <div
-                            className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                              file.type === "pdf"
-                                ? "bg-red-100 text-red-600"
-                                : "bg-blue-100 text-blue-600"
-                            }`}
-                          >
-                            {file.type === "pdf" ? (
-                              <FileText className="w-5 h-5" />
-                            ) : (
-                              <ImageIcon className="w-5 h-5" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-medium text-gray-900">
-                              {file.name}
-                            </p>
-                            <p className="text-sm text-gray-500">{file.size}</p>
-                          </div>
-                          <Badge
-                            variant={
-                              file.type === "pdf" ? "destructive" : "default"
-                            }
-                          >
-                            {file.type.toUpperCase()}
-                          </Badge>
-                        </div>
-
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => moveFile(file.id, "up")}
-                            disabled={index === 0}
-                          >
-                            <ArrowUp className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => moveFile(file.id, "down")}
-                            disabled={index === files.length - 1}
-                          >
-                            <ArrowDown className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <RotateCw className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeFile(file.id)}
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <ShowFileList
+                files={files}
+                moveFile={moveFile}
+                removeFile={removeFile}
+                setFiles={setFiles}
+              />
             )}
 
             {/* Processing Overlay - appears in center of screen */}
-            {isProcessing && (
-              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-                <Card className="shadow-2xl border-0 bg-white mx-4 min-w-[400px]">
-                  <CardContent className="pt-8 pb-8">
-                    <div className="text-center space-y-4">
-                      <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto">
-                        <Combine className="w-8 h-8 text-white animate-pulse" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                          Merging your files...
-                        </h3>
-                        <Progress
-                          value={progress}
-                          className="w-full max-w-md mx-auto"
-                        />
-                        <p className="text-gray-600 mt-2">
-                          {progress}% complete
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+            {isProcessing && <ProgressLoader progress={progress} />}
           </div>
         </main>
 
         {/* Sidebar */}
-        <aside className="w-80 bg-white/50 backdrop-blur-sm border-l border-gray-200 p-6">
-          <div className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">How it works</h3>
-              <div className="space-y-3 text-sm text-gray-600">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-xs font-semibold text-blue-600">
-                      1
-                    </span>
-                  </div>
-                  <p>Add your PDF files and images</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-xs font-semibold text-blue-600">
-                      2
-                    </span>
-                  </div>
-                  <p>Arrange them in your preferred order</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-xs font-semibold text-blue-600">
-                      3
-                    </span>
-                  </div>
-                  <p>Click merge and save your new PDF</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <Button
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                size="lg"
-                onClick={handleMerge}
-                disabled={files.length === 0 || isProcessing}
-              >
-                <Combine className="w-4 h-4 mr-2" />
-                {isProcessing ? "Processing..." : "Merge Files"}
-              </Button>
-            </div>
-
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">
-                Supported formats
-              </h4>
-              <div className="text-sm text-gray-600 space-y-1">
-                <p>
-                  <strong>Images:</strong> JPG, PNG, TIFF, BMP
-                </p>
-                <p>
-                  <strong>Documents:</strong> PDF
-                </p>
-                <p>
-                  <strong>File size:</strong> Up to 100MB each
-                </p>
-              </div>
-            </div>
-          </div>
-        </aside>
+        <Sidebar
+          files={files}
+          handleMerge={handleMerge}
+          isProcessing={isProcessing}
+        />
       </div>
 
       {/* Sticky Bottom Merge Button - only show when files exist */}
