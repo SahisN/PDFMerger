@@ -88,12 +88,6 @@ export default function ShowFileList({
                 >
                   <ArrowDown className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="icon">
-                  <Eye className="w-4 h-4" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <RotateCw className="w-4 h-4" />
-                </Button>
                 <Button
                   variant="ghost"
                   size="icon"
