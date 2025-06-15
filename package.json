@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "check:formatting": "prettier --check .",
     "format": "prettier --write .",
-    "check:types": "tsc --noEmit"
+    "check:types": "tsc --noEmit",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@radix-ui/react-progress": "^1.1.7",
