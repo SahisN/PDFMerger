@@ -54,7 +54,7 @@ export default function Sidebar({
           <h4 className="font-medium text-gray-900 mb-2">Supported formats</h4>
           <div className="text-sm text-gray-600 space-y-1">
             <p>
-              <strong>Images:</strong> JPG, PNG, TIFF, BMP
+              <strong>Images:</strong> JPG, PNG
             </p>
             <p>
               <strong>Documents:</strong> PDF
