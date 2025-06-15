@@ -6,5 +6,5 @@ import PDFMergerApp from "./PDFMergerApp.tsx";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <PDFMergerApp />
-  </StrictMode>
+  </StrictMode>,
 );

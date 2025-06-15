@@ -12,6 +12,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import type React from "react";
 
 export default function ShowFileList({
   files,
@@ -20,9 +21,12 @@ export default function ShowFileList({
   removeFile,
 }: {
   files: FileItem[];
+  // eslint-disable-next-line no-unused-vars
   setFiles: (file: React.SetStateAction<FileItem[]>) => void;
-  moveFile: (id: string, direction: "up" | "down") => void;
-  removeFile: (id: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  moveFile: (_id: string, _direction: "up" | "down") => void;
+  // eslint-disable-next-line no-unused-vars
+  removeFile: (_id: string) => void;
 }) {
   return (
     <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm">

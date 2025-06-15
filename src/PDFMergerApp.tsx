@@ -20,7 +20,7 @@ export default function PDFMergerApp() {
     if (files) {
       const validFiles: FileItem[] = Array.from(files)
         .filter((file) =>
-          ["application/pdf", "image/png", "image/jpeg"].includes(file.type)
+          ["application/pdf", "image/png", "image/jpeg"].includes(file.type),
         )
         .map((file) => ({
           file,
@@ -98,7 +98,7 @@ export default function PDFMergerApp() {
       link.download = "merged.pdf";
       link.click();
       URL.revokeObjectURL(url);
-    } catch (err) {
+    } catch {
       alert("Merging files failed...");
     }
   };
@@ -141,8 +141,8 @@ export default function PDFMergerApp() {
                     Drop files here or click to browse
                   </h3>
                   <p className="text-gray-600 mb-6">
-                    Add PDFs and images in any order - we'll merge them into one
-                    PDF
+                    Add PDFs and images in any order - we&aposll merge them into
+                    one PDF
                   </p>
 
                   <div className="flex items-center justify-center gap-8 text-sm text-gray-500">
