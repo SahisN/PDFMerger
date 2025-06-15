@@ -5,10 +5,8 @@ import type { FileItem } from "@/schema/types";
 import {
   ArrowDown,
   ArrowUp,
-  Eye,
   FileText,
   ImageIcon,
-  RotateCw,
   Trash2,
   X,
 } from "lucide-react";

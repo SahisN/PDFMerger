@@ -1,5 +1,5 @@
 import type { FileItem } from "@/schema/types";
-import { PDFDocument, rgb } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
 
 export const mergeFilesToPdf = async (files: FileItem[]): Promise<Blob> => {
   const mergedPdf = await PDFDocument.create();
