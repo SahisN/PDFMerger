@@ -37,7 +37,7 @@ export const mergeFilesToPdf = async (files: FileItem[]): Promise<Blob> => {
         // Scale image to fit inside the page
         const scale = Math.min(
           PAGE_WIDTH / originalWidth,
-          PAGE_HEIGHT / originalHeight
+          PAGE_HEIGHT / originalHeight,
         );
 
         const scaledWidth = originalWidth * scale;
